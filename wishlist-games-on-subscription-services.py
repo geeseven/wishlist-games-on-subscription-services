@@ -8,12 +8,16 @@ from requests import get
 description = (
     "Check a public Steam or GOG wishlist for games on "
     "Apple Arcade, "
-    "EA Play Pro, "
+    "EA Play, "
     "Stadia, "
     "Ubisoft+, and "
     "Xbox Game Pass."
 )
-parser = ArgumentParser(description=description)
+epilog = (
+    "This script has some limitations, see "
+    "https://github.com/geeseven/wishlist-games-on-subscription-services/tree/main#limitations"  # noqa: E501
+)
+parser = ArgumentParser(description=description, epilog=epilog)
 parser.add_argument("url", help="public Steam or GOG wishlist url")
 args = parser.parse_args()
 
@@ -56,7 +60,7 @@ def get_steam_wishlist(url):
     # https://store.steampowered.com/wishlist/id/ezekiel_iii#sort=order
     # api call for wishlist
     # https://store.steampowered.com/wishlist/id/ezekiel_iii/wishlistdata/
-    if '#sort=order' in url:
+    if "#sort=order" in url:
         url = url.replace("#sort=order", "/wishlistdata/")
     else:
         url = url + "/wishlistdata/"
