@@ -16,7 +16,7 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
 
-This script has some limitations, see https://github.com/geeseven/wishlist-games-on-subscription-services/new/main?readme=1#limitations
+This script has some limitations, see https://github.com/geeseven/wishlist-games-on-subscription-services/tree/main#limitations
 
 ```
 
