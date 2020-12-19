@@ -208,3 +208,12 @@ output(game_list, ubisoft_list, "Ubisoft+")
 
 game_pass_list = get_pcgamingwiki("Xbox Game Pass for PC::true")
 output(game_list, game_pass_list, "Xbox Game Pass for PC(Windows 10)")
+
+game_pass_list = get_pcgamingwiki(
+    "Xbox Game Pass for PC::true|Xbox Play Anywhere::true"
+)
+output(
+    game_list,
+    game_pass_list,
+    "Xbox Game Pass for PC(Windows 10) and are Xbox Play Anywhere games",
+)

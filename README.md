@@ -20,7 +20,7 @@ This script has some limitations, see https://github.com/geeseven/wishlist-games
 
 ```
 
-## Examples 
+## Examples
 
 These are completely random wishlists.
 
@@ -66,6 +66,11 @@ The Messenger
 Wasteland 3
 Wasteland Remastered
 
+GOG wishlist games on Xbox Game Pass for PC(Windows 10) and are Xbox Play Anywhere games:
+Children of Morta
+Hypnospace Outlaw
+Sea Salt
+Wasteland Remastered
 
 $ ./wishlist-games-on-subscription-services.py https://store.steampowered.com/wishlist/profiles/76561197974046543#sort=order
 processing, this will take a few seconds
@@ -122,6 +127,14 @@ Night in the Woods
 No Man's Sky
 The Dark Pictures Anthology: Man of Medan
 Xeno Crisis
+
+Steam wishlist games on Xbox Game Pass for PC(Windows 10) and are Xbox Play Anywhere games:
+Celeste
+Deep Rock Galactic
+Descenders
+Gears 5
+Levelhead
+Lonely Mountains: Downhill
 ```
 
 
