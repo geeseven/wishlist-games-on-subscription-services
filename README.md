@@ -1,6 +1,6 @@
 # wishlist-games-on-subscription-services
 
-Check a public Steam or GOG wishlist for games on Apple Arcade, EA Play, Stadia, Ubisoft+, and Xbox Game Pass.
+Check a public GOG, Humble Store, or Steam wishlist for games on Apple Arcade, EA Play, Stadia, Ubisoft+, and Xbox Game Pass.
 
 ## Usage
 
@@ -72,6 +72,47 @@ Hypnospace Outlaw
 Sea Salt
 Wasteland Remastered
 
+$ ./wishlist-games-on-subscription-services.py https://www.humblebundle.com/store/wishlist/76237556
+processing, this will take a few seconds
+
+No games in Humble Store wishlist are on Apple Arcade.
+
+No games in Humble Store wishlist are on EA Play(Steam).
+
+Humble Store wishlist games on EA Play:
+Moonlighter
+Slay the Spire
+Worms W.M.D
+
+Humble Store wishlist games on EA Play Pro:
+A Plague Tale: Innocence
+Northgard
+
+Humble Store wishlist games on Stadia:
+Celeste
+Spiritfarer
+
+No games in Humble Store wishlist are on Ubisoft+.
+
+Humble Store wishlist games on Xbox Game Pass for PC(Windows 10):
+A Plague Tale: Innocence
+Celeste
+Cities: Skylines
+Monster Sanctuary
+Moonlighter
+Slay the Spire
+Spiritfarer
+Stellaris
+The Long Dark
+VA-11 Hall-A: Cyberpunk Bartender Action
+Worms W.M.D
+
+Humble Store wishlist games on Xbox Game Pass for PC(Windows 10) and are Xbox Play Anywhere games:
+Celeste
+Moonlighter
+Spiritfarer
+The Long Dark
+
 $ ./wishlist-games-on-subscription-services.py https://store.steampowered.com/wishlist/profiles/76561197974046543#sort=order
 processing, this will take a few seconds
 
@@ -141,8 +182,6 @@ Lonely Mountains: Downhill
 ## Limitations
 
 All subscription service information are pulled from crowd sourced websites, so false positives/negatives are possible.  Apple Arcade data comes from [wikipedia]. Stadia data comes from [StadiaGameDB].  All others come from [PCGamingWiki].  If you notice errors, please updated these sites.  Also mismatched versions of games might get missed, i.e. 'Control' vs 'Control Ultimate Edition'.
-
-
 
 [wikipedia]: https://en.wikipedia.org/wiki/List_of_Apple_Arcade_games
 [stadiagamedb]: https://stadiagamedb.com

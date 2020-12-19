@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import json
 from argparse import ArgumentParser
 from re import findall
 
@@ -6,7 +7,7 @@ from bs4 import BeautifulSoup
 from requests import get
 
 description = (
-    "Check a public Steam or GOG wishlist for games on "
+    "Check a public GOG, Humble Store, or Steam wishlist for games on "
     "Apple Arcade, "
     "EA Play, "
     "Stadia, "
@@ -18,7 +19,7 @@ epilog = (
     "https://github.com/geeseven/wishlist-games-on-subscription-services/tree/main#limitations"  # noqa: E501
 )
 parser = ArgumentParser(description=description, epilog=epilog)
-parser.add_argument("url", help="public Steam or GOG wishlist url")
+parser.add_argument("url", help="public GOG, Humble Store, or Steam wishlist url")
 args = parser.parse_args()
 
 
@@ -46,6 +47,24 @@ def get_gog_wishlist(url):
             break
         else:
             page += page
+    return games
+
+
+def get_humble_wishlist(url):
+    # no paganation, but a limit of 100 items
+    r = get(url)
+    if r.ok is False:
+        print("Could not load Humble Store wishlist. Looks to be a bad URL.")
+        exit(1)
+    soup = BeautifulSoup(r.text, features="html.parser")
+    script = soup.find("script", id="storefront-webpack-json-data")
+    j = json.loads(script.contents[0])
+    if len(j["products_json"]) == 0:
+        print("Humble Store wishlist is empty.")
+        exit()
+    games = []
+    for item in j["products_json"]:
+        games.append(item["human_name"])
     return games
 
 
@@ -150,20 +169,34 @@ def get_apple_arcade_list():
 def output(wish_game_list, platform_game_list, platform_name):
     if "gog.com" in args.url:
         wish_list = "GOG"
+    elif "humblebundle.com" in args.url:
+        wish_list = "Humble Store"
     elif "store.steampowered.com" in args.url:
         wish_list = "Steam"
 
     # Steam, GOG and PCGamingWiki are lists of tuples like ('game name', game-id)
-    # Apple and Stadia are just a list of game names
+    # Humble, Apple and Stadia are just a list of game names
+    # compare by game-id if available, fall back to matching game names
 
-    # convert Steam and GOG to just a list of names for Apple and Stadia and compare.
-    if type(platform_game_list[0]) is not tuple:
-        temp = []
-        for item in wish_game_list:
-            temp.append(str(item[0]))
-        g = list(set(temp) & set(platform_game_list))
+    # Humble and PCGamingWiki
+    if type(wish_game_list[0]) is not tuple and type(platform_game_list[0]) is tuple:
+        # platform_game_list = list_tuple_convertion(platform_game_list)
+        platform_game_list = [item[0] for item in platform_game_list]
+        g = list(set(wish_game_list) & set(platform_game_list))
 
-    #  compare game-ids and return game name from wishlist
+    # Steam or GOG and Apple or Stadia
+    elif type(platform_game_list[0]) is not tuple and type(wish_game_list[0]) is tuple:
+        wish_game_list = [item[0] for item in wish_game_list]
+        g = list(set(wish_game_list) & set(platform_game_list))
+
+    # Humble and Apple or Stadia
+    elif (
+        type(wish_game_list[0]) is not tuple
+        and type(platform_game_list[0]) is not tuple
+    ):
+        g = list(set(wish_game_list) & set(platform_game_list))
+
+    # Steam or GOG and PCGamingWiki
     else:
         g = []
         for game in wish_game_list:
@@ -182,6 +215,8 @@ print("processing, this will take a few seconds")
 
 if "gog.com" in args.url:
     game_list = get_gog_wishlist(args.url)
+elif "humblebundle.com" in args.url:
+    game_list = get_humble_wishlist(args.url)
 elif "store.steampowered.com" in args.url:
     game_list = get_steam_wishlist(args.url)
 else:
