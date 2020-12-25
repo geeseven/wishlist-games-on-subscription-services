@@ -62,9 +62,7 @@ def get_humble_wishlist(url):
     if len(j["products_json"]) == 0:
         print("Humble Store wishlist is empty.")
         exit()
-    games = []
-    for item in j["products_json"]:
-        games.append(item["human_name"])
+    games = [item["human_name"] for item in j["products_json"]]
     return games
 
 
@@ -141,12 +139,10 @@ def get_pcgamingwiki(condition):
 
 
 def get_stadia_list():
-    games = []
     # url = "https://stadiagamedb.com/data/gamedb.json"
     url = "https://raw.githubusercontent.com/nilicule/StadiaGameDB/master/data/gamedb.json"  # noqa: E501
     r = get(url)
-    for game in r.json()["data"]:
-        games.append(game[1])
+    games = [game[1] for game in r.json()["data"]]
     return games
 
 
