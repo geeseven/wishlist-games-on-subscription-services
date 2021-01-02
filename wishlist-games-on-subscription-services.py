@@ -26,7 +26,7 @@ args = parser.parse_args()
 def get_gog_wishlist(url):
     # GOG only provides json wishlist data by a gog-user ID
     # It is listed on a user's wishlist page, so we need to scrape it first.
-    r = get(url)
+    r = get(url, allow_redirects=False, timeout=(3.05, 27))
     goguser = findall(r'gog-user="([0-9]*)"', r.text)
     if r.ok is False:
         print("Could not load GOG wishlist.  Either bad URL or wishlist is not public.")
@@ -34,10 +34,9 @@ def get_gog_wishlist(url):
     page = 1
     games = []
     while True:
-        url_page = "https://embed.gog.com/public_wishlist/{}/search?page={}".format(
-            goguser[0], page
-        )
-        r = get(url_page, allow_redirects=False, timeout=(3.05, 27))
+        url_page = "https://embed.gog.com/public_wishlist/{}/search".format(goguser[0])
+        params = {"page": page}
+        r = get(url_page, params=params, allow_redirects=False, timeout=(3.05, 27))
         if r.json()["totalProducts"] == 0:
             print("GOG wishlist is empty.")
             exit()
@@ -52,9 +51,11 @@ def get_gog_wishlist(url):
 
 def get_humble_wishlist(url):
     # no paganation, but a limit of 100 items
-    r = get(url)
+    r = get(url, allow_redirects=False, timeout=(3.05, 27))
     if r.ok is False:
-        print("Could not load Humble Store wishlist. Looks to be a bad URL.")
+        print(
+            "Could not load Humble Store wishlist. Either bad URL or wishlist is not public."  # noqa: E501
+        )
         exit(1)
     soup = BeautifulSoup(r.text, features="html.parser")
     script = soup.find("script", id="storefront-webpack-json-data")
@@ -84,8 +85,8 @@ def get_steam_wishlist(url):
     games = []
     page = 0
     while True:
-        url_page = url + "?p=" + str(page)
-        r = get(url_page, allow_redirects=False, timeout=(3.05, 27))
+        params = {"p": page}
+        r = get(url, params=params, allow_redirects=False, timeout=(3.05, 27))
         # bad user/id will return {"success":2}
         # valid user with empty wishlist will return []
         # valid user with games in wishlist will return a dict of dict
@@ -117,13 +118,14 @@ def get_pcgamingwiki(condition):
         printouts = "GOGcom ID"
     else:
         printouts = "Steam_AppID"
-    url = (
-        "https://www.pcgamingwiki.com/w/api.php?action=askargs&printouts={}&format=json&conditions=".format(  # noqa: E501
-            printouts
-        )
-        + condition
-    )
-    r = get(url)
+    url = "https://www.pcgamingwiki.com/w/api.php"
+    params = {
+        "action": "askargs",
+        "conditions": condition,
+        "format": "json",
+        "printouts": printouts,
+    }
+    r = get(url, params=params, allow_redirects=False, timeout=(3.05, 27))
     while True:
         for item in list(r.json()["query"]["results"].keys()):
             for id in r.json()["query"]["results"][item]["printouts"][printouts]:
@@ -134,14 +136,15 @@ def get_pcgamingwiki(condition):
             break
         else:
             offset = str(r.json()["query-continue-offset"])
-            r = get(url + "&parameters=offset=" + offset)
+            params["parameters"] = "offset={}".format(offset)
+            r = get(url, params=params, allow_redirects=False, timeout=(3.05, 27))
     return games
 
 
 def get_stadia_list():
     # url = "https://stadiagamedb.com/data/gamedb.json"
     url = "https://raw.githubusercontent.com/nilicule/StadiaGameDB/master/data/gamedb.json"  # noqa: E501
-    r = get(url)
+    r = get(url, allow_redirects=False, timeout=(3.05, 27))
     games = [game[1] for game in r.json()["data"]]
     return games
 
@@ -149,7 +152,7 @@ def get_stadia_list():
 def get_apple_arcade_list():
     games = []
     url = "https://en.wikipedia.org/wiki/List_of_Apple_Arcade_games"
-    r = get(url)
+    r = get(url, allow_redirects=False, timeout=(3.05, 27))
     soup = BeautifulSoup(r.text, features="html.parser")
     th = soup.find_all("th", scope="row")
     for item in th:
